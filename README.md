@@ -25,7 +25,7 @@ Window is not yet supported
 #### Create demo project
 
 ```
-$ projector create_test
+$ projector create-test
 ```
 
 #### Start Create project dialog
