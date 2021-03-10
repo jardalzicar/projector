@@ -10,7 +10,7 @@ Projector is an automated system which helps to create and manage personal proje
 ## Installation
 
 #### Dependencies
-In order to run projector, current version of JRE must be installed on your system.
+In order to run projector, current version of JRE must be installed on your system
 
 #### OS X & Linux:
 
