@@ -197,6 +197,9 @@ public class Controller {
                 case "author":
                     project.changeAuthor(value);
                     break;
+                case "state":
+                    project.changeState(value);
+                    break;
                 default:
                     errorExit("Unknown property: " + property);
             }

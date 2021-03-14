@@ -63,6 +63,7 @@ public class GitRepository extends Component{
         try {
             git.add().addFilepattern(".").call();
             git.commit().setMessage(message).call();
+            this.project.updateDateLastSaved();
             return true;
         } catch (GitAPIException e) {
             return false;

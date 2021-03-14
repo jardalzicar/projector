@@ -25,12 +25,17 @@ public class Project {
     private String version;
     private String author;
     private String dateCreated;
+    private String dateLastSaved;
+    private String state;
 
     String defaultVersion = "0.0.1";
+    String defaultState = "created";
 
     //TODO Delete files after unsuccessful open
     // Versions - tagging
     // Change eagle file name
+    // To do list
+    // GUI
 
 
     /**
@@ -45,7 +50,9 @@ public class Project {
         this.projectRoot = defaultProjectRoot;
         this.author = author;
         this.version = defaultVersion;
+        this.state = defaultState;
         this.dateCreated = new SimpleDateFormat("dd.MM.yyyy").format(new Date());
+        this.dateLastSaved = dateCreated;
 
         // Create directory name
         projectDirName = name.toLowerCase().trim().replaceAll("\\s","_");
@@ -161,6 +168,8 @@ public class Project {
         jo.put("author", this.author);
         jo.put("version", this.version);
         jo.put("dateCreated", this.dateCreated);
+        jo.put("state", this.state);
+        jo.put("dateLastSaved", this.dateLastSaved);
 
         for(Component c : components){
             if(c.relativePath.isEmpty()){
@@ -191,6 +200,8 @@ public class Project {
         String tmpAuthor = (String) jo.get("author");
         String tmpVersion = (String) jo.get("version");
         String tmpDateCreated = (String) jo.get("dateCreated");
+        String tmpState = (String) jo.get("state");
+        String tmpDateLastSaved= (String) jo.get("dateLastSaved");
         // Components
         String plist = (String) jo.get("ExcelPartList");
         String readMe = (String) jo.get("ReadMe");
@@ -199,7 +210,7 @@ public class Project {
 
         // Check values from JSON object
         if(tmpName == null || tmpDescription == null || tmpVersion == null ||
-                tmpAuthor == null || tmpDateCreated == null){
+                tmpAuthor == null || tmpDateCreated == null || tmpState == null || tmpDateLastSaved == null){
             controller.errorExit("Some attributes were not found in config file");
         }
 
@@ -209,6 +220,8 @@ public class Project {
         author = tmpAuthor;
         version = tmpVersion;
         dateCreated = tmpDateCreated;
+        state = tmpState;
+        dateLastSaved = tmpDateLastSaved;
 
         // Create components
         components = new ArrayList<Component>();
@@ -271,6 +284,8 @@ public class Project {
         System.out.println("Version: " + version);
         System.out.println("Author: " + author);
         System.out.println("Date created: " + dateCreated);
+        System.out.println("Date last saved: " + dateLastSaved);
+        System.out.println("State: " + state);
 
         System.out.println("Components: ");
         for(Component c : this.components){
@@ -330,6 +345,27 @@ public class Project {
         }
     }
 
+    public void changeState(String newState){
+        String oldState = state;
+        state = newState;
+        saveJSONConfig();
+
+        Readme readme = getReadme();
+        if(readme != null) {
+            readme.updateState(newState);
+        }
+    }
+
+    public void updateDateLastSaved(){
+        String oldDateLastSaved = dateLastSaved;
+        dateLastSaved = new SimpleDateFormat("dd.MM.yyyy").format(new Date());
+        saveJSONConfig();
+
+        Readme readme = getReadme();
+        if(readme != null) {
+            readme.updateDateLastSaved(dateLastSaved);
+        }
+    }
 
 
     // Getters and setters
@@ -375,6 +411,14 @@ public class Project {
 
     public String getDateCreated() {
         return dateCreated;
+    }
+
+    public String getDateLastSaved() {
+        return dateLastSaved;
+    }
+
+    public String getState() {
+        return state;
     }
 
     public List<Component> getComponents() {

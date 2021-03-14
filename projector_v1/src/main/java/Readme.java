@@ -30,6 +30,8 @@ public class Readme extends Component {
         updateDescription(project.getDescription());
         updateAuthor(project.getAuthor());
         updateDateCreated(project.getDateCreated());
+        updateDateLastSaved(project.getDateLastSaved());
+        updateState(project.getState());
         updateVersion(project.getVersion());
         updateComponents(project.getComponents());
     }
@@ -81,6 +83,18 @@ public class Readme extends Component {
     boolean updateVersion(String newDescription){
         String regex = "-\\sVersion:\\s.+";
         newDescription = "- Version: " + newDescription;
+        return replaceText(regex, newDescription);
+    }
+
+    boolean updateState(String newState){
+        String regex = "-\\sState:\\s.+";
+        newState = "- State: " + newState;
+        return replaceText(regex, newState);
+    }
+
+    boolean updateDateLastSaved(String newDescription){
+        String regex = "-\\sLast saved:\\s.+";
+        newDescription = "- Last saved: " + newDescription;
         return replaceText(regex, newDescription);
     }
 

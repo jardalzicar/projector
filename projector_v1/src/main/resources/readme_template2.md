@@ -6,7 +6,9 @@
 
 - Author: Author Name
 - Created: 1.1.1970
+- Last saved: 2.1.1970
 - Version: 0.0.0
+- State: Not existing
 - Components: Component1 Component2 Copmonent3
 
 ## Objective
