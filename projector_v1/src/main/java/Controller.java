@@ -76,6 +76,7 @@ public class Controller {
         components.add(new Readme());
         components.add(new GitRepository());
         components.add(new Eagle());
+        components.add(new TodoList());
 
         Project project = new Project(this, projectName, projectDescription, author, components);
 
@@ -111,6 +112,11 @@ public class Controller {
         System.out.println("Do you want to create Eagle project? Type \"Y\" for yes, \"N\" for no.");
         if(userInterface.getYesNoInput()){
             components.add(new Eagle());
+        }
+
+        System.out.println("Do you want to create TODO list? Type \"Y\" for yes, \"N\" for no.");
+        if(userInterface.getYesNoInput()){
+            components.add(new TodoList());
         }
 
         System.out.println("Do you want to create local GIT repository? Type \"Y\" for yes, \"N\" for no.");

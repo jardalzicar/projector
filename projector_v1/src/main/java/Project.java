@@ -3,6 +3,7 @@ import org.json.simple.JSONObject;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -103,6 +104,7 @@ public class Project {
         }
     }
 
+
     /**
      * Constructor - open existing project from within project folder
      */
@@ -128,6 +130,7 @@ public class Project {
         // Apply JSON config to project
         applyJSONConfig(jo);
     }
+
 
     /**
      * Constructor - open existing project at specified path
@@ -183,9 +186,11 @@ public class Project {
         return jo;
     }
 
+
     public void saveJSONConfig(){
         config.writeJsonConfig(this.extractJSONConfig());
     }
+
 
     /**
      * Set project config according to JSON object
@@ -194,19 +199,13 @@ public class Project {
     public void applyJSONConfig(JSONObject jo){
 
         // Get values from JSON object
-        // Attributes
         String tmpName = (String) jo.get("name");
         String tmpDescription = (String) jo.get("description");
         String tmpAuthor = (String) jo.get("author");
         String tmpVersion = (String) jo.get("version");
         String tmpDateCreated = (String) jo.get("dateCreated");
         String tmpState = (String) jo.get("state");
-        String tmpDateLastSaved= (String) jo.get("dateLastSaved");
-        // Components
-        String plist = (String) jo.get("ExcelPartList");
-        String readMe = (String) jo.get("ReadMe");
-        String gitRepo = (String) jo.get("GitRepo");
-        String eagle = (String) jo.get("Eagle");
+        String tmpDateLastSaved = (String) jo.get("dateLastSaved");
 
         // Check values from JSON object
         if(tmpName == null || tmpDescription == null || tmpVersion == null ||
@@ -223,38 +222,22 @@ public class Project {
         state = tmpState;
         dateLastSaved = tmpDateLastSaved;
 
-        // Create components
+        // Components
         components = new ArrayList<Component>();
-        if(!(plist == null)){
-            ExcelPartList p = new ExcelPartList();
-            if(!p.defaultPath.equals(plist)){
-                controller.errorExit("config file contains wrong PartList path");
+        List<Component> tmpComponents = new ArrayList<Component>(Arrays.asList(
+                new ExcelPartList(), new Readme(), new TodoList(), new GitRepository(), new Eagle()
+        ));
+
+        for(Component c: tmpComponents){
+            String cJsonString = (String) jo.get(c.componentName);
+            if(cJsonString != null){
+                if(cJsonString.equals(c.defaultPath) || cJsonString.equals("true")){
+                    components.add(c);
+                }
+                else{
+                    controller.errorExit("Config file contains wrong path for " + c.componentName);
+                }
             }
-            else{
-                components.add(p);
-            }
-        }
-        if(!(readMe == null)){
-            Readme r = new Readme();
-            if(!r.defaultPath.equals(readMe)){
-                controller.errorExit("config file contains wrong ReadMe path");
-            }
-            else{
-                components.add(r);
-            }
-        }
-        if(!(eagle == null)){
-            Eagle e = new Eagle();
-            if(!e.defaultPath.equals(eagle)){
-                controller.errorExit("config file contains wrong Eagle path");
-            }
-            else{
-                components.add(e);
-            }
-        }
-        if(!(gitRepo == null)){
-            GitRepository gr = new GitRepository();
-            components.add(gr);
         }
 
         // Init components
@@ -274,6 +257,7 @@ public class Project {
             }
         }
     }
+
 
     public void printConfig(){
         //config.printJson(config.readJsonConfig());
@@ -321,7 +305,13 @@ public class Project {
         if(readme != null) {
             readme.updateName(newName);
         }
+
+        TodoList todoList = getTodoList();
+        if(todoList != null) {
+            todoList.updateName(newName);
+        }
     }
+
 
     public void changeDescription(String newDescription){
         String oldDescription = description;
@@ -334,6 +324,7 @@ public class Project {
         }
     }
 
+
     public void changeAuthor(String newAuthor){
         String oldAuthor = author;
         author = newAuthor;
@@ -345,6 +336,7 @@ public class Project {
         }
     }
 
+
     public void changeState(String newState){
         String oldState = state;
         state = newState;
@@ -355,6 +347,7 @@ public class Project {
             readme.updateState(newState);
         }
     }
+
 
     public void updateDateLastSaved(){
         String oldDateLastSaved = dateLastSaved;
@@ -375,6 +368,15 @@ public class Project {
         for (Component c: components) {
             if( c instanceof Readme){
                 return (Readme) c;
+            }
+        }
+        return null;
+    }
+
+    public TodoList getTodoList(){
+        for (Component c: components) {
+            if( c instanceof TodoList){
+                return (TodoList) c;
             }
         }
         return null;
