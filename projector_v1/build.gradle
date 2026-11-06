@@ -3,22 +3,24 @@ plugins {
     id 'application'
 }
 
-group 'org.example'
-version '1.0-SNAPSHOT'
+group = 'org.example'
+version = '1.0-SNAPSHOT'
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    testCompile group: 'junit', name: 'junit', version: '4.12'
-    compile "org.apache.poi:poi-ooxml:4.1.2"
-    compile "com.googlecode.json-simple:json-simple:1.1.1"
-    compile group: 'org.eclipse.jgit', name: 'org.eclipse.jgit', version: '2.2.0.201212191850-r'
+    testImplementation "junit:junit:4.13.2"
+    implementation "org.apache.poi:poi-ooxml:6.0.0"
+    implementation "com.googlecode.json-simple:json-simple:1.1.1"
+    implementation "org.eclipse.jgit:org.eclipse.jgit:7.8.1.202611041320-r"
+    // Silences JGit's "No SLF4J providers" warning
+    runtimeOnly "org.slf4j:slf4j-nop:2.0.18"
 }
 
 application {
-    mainClassName = 'Controller'
+    mainClass = 'Controller'
 }
 
 run {
@@ -32,6 +34,9 @@ jar {
     }
 
     from {
-        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
     }
+
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    exclude 'META-INF/*.SF', 'META-INF/*.DSA', 'META-INF/*.RSA'
 }

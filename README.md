@@ -38,8 +38,8 @@ Projector is a small Java command-line tool that creates and manages personal pr
 
 | Purpose          | Requirement                                                                 |
 | ---------------- | --------------------------------------------------------------------------- |
-| Running          | Java 11 or newer (JRE)                                                      |
-| Building         | JDK 11–14 (the bundled Gradle 6.3 wrapper does not run on newer JDKs)       |
+| Running          | Java 25 or newer (JRE)                                                      |
+| Building         | JDK 25 or newer (the Gradle 9.8.2 wrapper is included)                      |
 | Operating system | macOS or Linux. Windows is not supported yet.                               |
 
 Git does not need to be installed. Projector uses the bundled [JGit](https://www.eclipse.org/jgit/) library.
@@ -50,10 +50,10 @@ Projector is built with the Gradle wrapper in `projector_v1/`. The `jar` task pr
 
 ```bash
 cd projector_v1
-JAVA_HOME=$(/usr/libexec/java_home -v 14) ./gradlew jar
+./gradlew jar
 ```
 
-On Linux, set `JAVA_HOME` to the path of a JDK 11–14 installation instead.
+If your default JDK is older than 25, point `JAVA_HOME` at a JDK 25 installation first, for example `JAVA_HOME=$(/usr/libexec/java_home -v 25) ./gradlew jar` on macOS.
 
 The jar is written to `projector_v1/build/libs/projector_v1-1.0-SNAPSHOT.jar`.
 
@@ -230,9 +230,10 @@ To add a component:
 
 | Library                                                         | Version | Used for                  |
 | --------------------------------------------------------------- | ------- | ------------------------- |
-| [Apache POI](https://poi.apache.org/) (`poi-ooxml`)             | 4.1.2   | Excel part list (planned) |
+| [Apache POI](https://poi.apache.org/) (`poi-ooxml`)             | 6.0.0   | Excel part list (planned) |
 | [json-simple](https://github.com/fangyidong/json-simple)        | 1.1.1   | `config.json`             |
-| [JGit](https://www.eclipse.org/jgit/)                           | 2.2.0   | Git repository            |
+| [JGit](https://www.eclipse.org/jgit/)                           | 7.8.1   | Git repository            |
+| [SLF4J](https://www.slf4j.org/) (`slf4j-nop`)                   | 2.0.18  | Silences JGit's logging   |
 
 ## Development
 
@@ -242,7 +243,7 @@ cd projector_v1
 ./gradlew run      # run create-test in projector_v1/
 ```
 
-There are no automated tests yet. JUnit 4 is already set up as a test dependency, so tests can go into `src/test/java/`.
+There are no automated tests yet. JUnit 4.13.2 is already set up as a test dependency, so tests can go into `src/test/java/`.
 
 ## Known limitations
 
@@ -253,7 +254,6 @@ There are no automated tests yet. JUnit 4 is already set up as a test dependency
 - Running a project command outside a project folder leaves an empty `config.json` behind.
 - The part list is copied from an Apple Numbers template, despite being called "MS Excel" in the wizard.
 - `-h` lists an `open` command that does not exist and leaves out several commands. `clone` is reserved but not implemented.
-- The build uses Gradle 6.3 and the `compile` configuration, which newer Gradle versions no longer support.
 
 ## Roadmap
 
